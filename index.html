@@ -1,16 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baba | Weather insights</title>
-    <script src="script.js" defer></script>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baba | Weather insights</title>
+  <script src="script.js" defer></script>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Baba</h1>
-    <div id="weather-data">
-        <!-- Weather data will be inserted here by JavaScript -->
-    </div>
+	<div class="container">
+	  <header>
+	  	<h1 class="visually-hidden">BABA.earth</h1>
+	    <img src="assets/baba-logo.svg" alt="BABA.earth" class="logo">
+	    <p class="tagline">Grow crops and plants with confidence.<br>Baba uses satellite data and artificial intelligence to share her advice.</p>
+	  </header>
+	  <div>
+	  	<div class="sub-header"><h2>Location</h2></div>
+	  	<div class="editable-field">Meadow Hill Fields, Roots Allotments, Coulsdon, UK</div>
+	  </div>
+	  <div id="weather-today">
+	  	<h2 class="card-header">Today</h2>
+		  <div id="weather-data">
+		    <!-- Weather data will be inserted here by JavaScript -->
+		  </div>
+	  </div>
+  </div>
 </body>
 </html>

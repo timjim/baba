@@ -6,16 +6,27 @@
   <title>Baba | Weather insights</title>
   <script src="script.js" defer></script>
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+	<link rel="alternate icon" type="image/png" href="/assets/favicon-16x16.png" sizes="16x16">
+	<link rel="alternate icon" type="image/png" href="/assets/favicon-32x32.png" sizes="32x32">
+	<link rel="alternate icon" type="image/png" href="/assets/favicon-48x48.png" sizes="48x48">
+	<link rel="alternate icon" type="image/png" href="/assets/favicon-180x180.png" sizes="180x180">	
+	<link rel="alternate icon" type="image/png" href="/assets/favicon-192x192.png">
+	<link rel="apple-touch-icon" href="/assets/favicon-192x192.png">
+	<link rel="manifest" href="/manifest.json">
 </head>
 <body>
 	<div class="container">
 	  <header>
 	  	<h1 class="visually-hidden">BABA.earth</h1>
 	    <img src="assets/baba-logo.svg" alt="BABA.earth" class="logo">
-	    <p class="tagline">Grow crops and plants with confidence.<br>Baba uses satellite data and artificial intelligence to share her advice.</p>
+	    <p class="tagline">Grow crops and plants with confidence.<br>Baba uses satellite data and artificial<br>intelligence to share her advice.</p>
 	  </header>
-	  <div>
-	  	<div class="sub-header"><h2>Location</h2></div>
+	  <div class="location-container">
+	  	<div class="header-row">
+		  	<div class="sub-header"><h2>Location</h2></div>
+		  	<a href="#" class="change-link">Change</a>
+	    </div>
 	  	<div class="editable-field">Meadow Hill Fields, Roots Allotments, Coulsdon, UK</div>
 	  </div>
 	  <div id="weather-today">
@@ -23,6 +34,7 @@
 		  <div id="weather-data">
 		    <!-- Weather data will be inserted here by JavaScript -->
 		  </div>
+		  <div class="caret"></div>
 	  </div>
   </div>
 </body>

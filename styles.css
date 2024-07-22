@@ -129,14 +129,14 @@ body {
 }
 
 header {
-  margin-bottom: var(--space-m);
+  margin-bottom: var(--space-xl);
 }
 
 .logo {
     width: 200px;
     height: auto;
     margin-top: 64px; /* Default for very small screens */
-    margin-bottom: var(--space-m);
+    margin-bottom: var(--space-s);
 }
 
 @media (min-width: 375px) {
@@ -170,13 +170,30 @@ header {
   border: 0;
 }
 
+.location-container {
+  margin-bottom: 12px;
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.change-link {
+    font-family: 'GeneralSans-Medium', sans-serif;
+    font-size: 16px;
+    color: #000000;
+    text-decoration: underline;
+}
+
 .sub-header {
   display: inline-block;
   background-color: #000000;
   color: #FAFAF9;
   border-radius: 2px;
   padding: 0 16px;
-  margin-bottom: 12px;
 }
 
 .sub-header h2 {
@@ -190,7 +207,6 @@ header {
   border: 1px solid #CBB292;
   border-radius: 6px;
   padding: 18px 16px;
-  margin-bottom: 12px;
   font-family: 'GeneralSans-Medium', sans-serif;
   font-size: 16px;
   font-weight: 500;
@@ -207,6 +223,7 @@ header {
   font-family: 'GeneralSans-Medium', sans-serif;
   font-weight: 500;
   font-size: 16px;
+  margin-bottom: 12px;
 }
 
 #weather-today {
@@ -214,10 +231,36 @@ header {
   padding: 16px;
   border-radius: 6px;
   box-shadow: 0px 4px 4px 0px rgba(212,197,177,1);
+  position: relative;
+  cursor: pointer;
+}
+
+.caret {
+  position: absolute;
+  right: 16px;  /* Adjust this value to move left/right */
+  top: 50%;  /* Center vertically */
+  transform: translateY(-50%);  /* Ensure perfect vertical centering */
+  width: 10px;  /* Adjust based on your SVG size */
+  height: 16px;  /* Adjust based on your SVG size */
+  background-image: url('assets/caret.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
 .detail {
   font-family: 'GeneralSans-Regular', sans-serif;
   font-size: 16px;
   font-weight: 400;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.circle {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 10px;
+  background-color: #A2C1DD;  /* Default color */
 }

@@ -104,9 +104,39 @@ body {
   position: relative;
   z-index: 0;
   background-color: #E8DED1; /* Fallback color */
-  background-image: url('assets/baba-bg.png');
+  overflow: hidden; /* Prevent the scaled image from creating scrollbars */
+}
+
+.container::before,
+.container::after {
+  content: '';
+  position: absolute;
+  top: -5px;  /* Slightly larger than the container */
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
   background-repeat: repeat-y;
-  background-size: 100% auto;
+  background-size: calc(100% + 10px) auto; /* Slightly larger than 100% */
+  z-index: -1;
+}
+
+.container::before {
+  background-image: url('assets/baba-bg-lazy.png');
+  filter: blur(5px);
+}
+
+.container::after {
+  background-image: url('assets/baba-bg.png');
+  opacity: 0;
+  transition: opacity 0.5s ease-in;
+}
+
+.container.loaded::before {
+  opacity: 1;
+}
+
+.container.loaded::after {
+  opacity: 1;
 }
 
 header {

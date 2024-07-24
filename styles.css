@@ -152,21 +152,13 @@ header {
 
 @media (min-width: 375px) {
     .logo {
-        margin-top: 88px; /* Your specified margin for most mobile devices */
+        margin-top: 64px; /* Your specified margin for most mobile devices */
     }
 }
 
 .tagline {
   margin-top: 0;
   margin-bottom: var(--space-m);
-}
-
-.card {
-  background-color: white;
-  border-radius: 8px;
-  padding: var(--space-s);
-  margin-bottom: var(--space-m);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .visually-hidden {
@@ -237,13 +229,14 @@ header {
   margin-bottom: 12px;
 }
 
-#weather-today {
+.card {
   background-color: rgba(255,255,255,0.62);
   padding: 16px;
   border-radius: 6px;
   box-shadow: 0px 4px 4px 0px rgba(212,197,177,1);
   position: relative;
   cursor: pointer;
+  margin-bottom: var(--space-s);
 }
 
 .caret {

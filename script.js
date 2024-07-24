@@ -3,11 +3,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function fetchWeatherData() {
-  const url = 'https://script.google.com/macros/s/AKfycbyVnB8Dv5ZRYymd9_XBTNcVAAZkOZd_L07NBLXgjIMb82Lf0wIxxAa5B_KuBHUFua45hw/exec';
+  const url = 'https://script.google.com/macros/s/AKfycbw1F7idjTKZMZ7UYLjQHPmSeAthHpVYPvXujpQTdl76Xl2D8usJoyOtp4D2-xz6TC2yew/exec';
   fetch(url)
     .then(response => response.json())
     .then(data => {
+      console.log('Received data:', data);  // Log the received data
       displayWeatherData(data);
+      displayNextThreeDays(data);
+      displayPastMonth(data);
     })
     .catch(error => {
       console.error('Error:', error);
@@ -48,6 +51,111 @@ function displayWeatherData(data) {
     // Remove placeholder class to stop the loading animation
     detailElement.classList.remove('placeholder');
   });
+}
+
+function displayNextThreeDays(data) {
+  const nextThreeDaysDiv = document.querySelector('#next-three-days > div');
+  if (!nextThreeDaysDiv) {
+    console.error('Could not find the next three days div');
+    return;
+  }
+
+  const details = [
+    { 
+      value: data.nextThreeDays?.forecast || 'No forecast available', 
+      getColor: getRainColor  // Use getRainColor for the forecast
+    },
+    { 
+      value: data.extremeWeather || 'No extreme weather',
+      getColor: (value) => value.toLowerCase() === 'no extreme weather' ? '#A3C48D' : '#FF6347'
+    }
+  ];
+
+  details.forEach((detail, index) => {
+    const detailElement = nextThreeDaysDiv.children[index];
+    if (!detailElement) {
+      console.error(`Could not find detail element at index ${index}`);
+      return;
+    }
+
+    const circle = detailElement.querySelector('.circle');
+    const placeholder = detailElement.querySelector('.text-placeholder');
+
+    if (!circle || !placeholder) {
+      console.error(`Could not find circle or placeholder for detail at index ${index}`);
+      return;
+    }
+
+    // Create a new element for the actual content
+    const textContent = document.createElement('span');
+    textContent.className = 'text-content';
+    textContent.textContent = detail.value;
+
+    // Update circle color using the getColor function
+    circle.style.backgroundColor = detail.getColor(detail.value);
+
+    // Hide placeholder and append actual content
+    placeholder.style.visibility = 'hidden';
+    placeholder.style.display = 'none';
+    detailElement.appendChild(textContent);
+
+    // Trigger fade-in animation with a delay based on index
+    setTimeout(() => {
+      detailElement.classList.add('fade-in');
+    }, index * 150); // 150ms delay between each item
+
+    // Remove placeholder class to stop the loading animation
+    detailElement.classList.remove('placeholder');
+  });
+}
+
+function displayPastMonth(data) {
+  const pastMonthDiv = document.querySelector('#the-past-month > div');
+  if (!pastMonthDiv) {
+    console.error('Could not find the past month div');
+    return;
+  }
+
+  const pastMonthData = data.babaPrediction.pastMonth;
+  const detail = {
+    value: `${pastMonthData.summary}`,
+    getColor: () => '#A2C1DD'  // Default color, you can adjust this if needed
+  };
+
+  const detailElement = pastMonthDiv.children[0];
+  if (!detailElement) {
+    console.error('Could not find detail element for past month');
+    return;
+  }
+
+  const circle = detailElement.querySelector('.circle');
+  const placeholder = detailElement.querySelector('.text-placeholder');
+
+  if (!circle || !placeholder) {
+    console.error('Could not find circle or placeholder for past month');
+    return;
+  }
+
+  // Create a new element for the actual content
+  const textContent = document.createElement('span');
+  textContent.className = 'text-content';
+  textContent.textContent = detail.value;
+
+  // Update circle color
+  circle.style.backgroundColor = detail.getColor();
+
+  // Hide placeholder and append actual content
+  placeholder.style.visibility = 'hidden';
+  placeholder.style.display = 'none';
+  detailElement.appendChild(textContent);
+
+  // Trigger fade-in animation
+  setTimeout(() => {
+    detailElement.classList.add('fade-in');
+  }, 150);
+
+  // Remove placeholder class to stop the loading animation
+  detailElement.classList.remove('placeholder');
 }
 
 function getRainColor(rainLevel) {

@@ -326,3 +326,70 @@ header {
 #weather-data:last-child {
   margin-bottom: 0;
 }
+
+.soil-moisture-content {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  height: 100px;
+}
+
+.chart-container {
+  width: 8px;
+  height: 100px;
+  background-color: #C5C3C0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.moisture-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100px;
+  margin-left: 12px;
+  flex-grow: 1;
+}
+
+.label {
+  font-family: 'GeneralSans-Regular', sans-serif;
+  font-size: 16px;
+  color: #A6A39E;
+  transition: color 0.3s ease;
+}
+
+.label.active {
+  font-family: 'GeneralSans-Medium', sans-serif;
+  color: #000000;
+}
+
+.soil-moisture-insight {
+  display: flex;
+  align-items: center;
+  font-family: 'GeneralSans-Regular', sans-serif;
+  font-size: 16px;
+  color: #000000;
+}
+
+.soil-moisture-insight .circle {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 10px;
+  background-color: #C5C3C0;
+}
+
+.soil-moisture-insight .text-placeholder {
+  height: 24px;
+  width: 62%;
+  background-color: #C5C3C0;
+  border-radius: 4px;
+}
+
+.soil-moisture-insight .text-content {
+  font-family: 'GeneralSans-Regular', sans-serif;
+}
+
+.chart-container, .moisture-labels {
+  transition: opacity 0.5s ease-out;
+}

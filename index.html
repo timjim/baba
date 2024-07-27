@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BABA.earth | Grow with confidence</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js" defer></script>
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
@@ -47,8 +48,30 @@
 		    </p>
 		  </div>
 		  <div class="caret"></div>
+	  </div>	  
+	  <div class="divider"></div>
+	  <div class="header-row">
+	  	<div class="sub-header"><h2>Baba thinks...</h2></div>
 	  </div>
-	  <div class="card" id="next-three-days">
+		<div class="card" id="soil-moisture">
+		  <h2 class="card-header">Watering needs</h2>
+		  <div class="soil-moisture-content">
+		    <div class="chart-container">
+		      <canvas id="soilMoistureChart"></canvas>
+		    </div>
+		    <div class="moisture-labels">
+		      <span class="label" level="wet">Wet soil</span>
+		      <span class="label" level="optimal">Optimal</span>
+		      <span class="label" level="dry">Dry soil</span>
+		    </div>
+		  </div>
+	    <p class="detail placeholder soil-moisture-insight">
+	      <span class="circle"></span>
+	      <span class="text-placeholder"></span>
+	    </p>		  
+		  <div class="caret"></div>
+		</div>
+    <div class="card" id="next-three-days">
 	  	<h2 class="card-header">The next 3 days</h2>
 		  <div>
 		    <p class="detail placeholder">
@@ -70,50 +93,6 @@
 		      <span class="text-placeholder"></span>
 		    </p>
 		  </div>
-		  <div class="caret"></div>
-	  </div>	  
-	  <div class="divider"></div>
-	  <div class="header-row">
-	  	<div class="sub-header"><h2>Baba thinks...</h2></div>
-	  </div>
-	  <div class="card">
-	  	<h2 class="card-header">Optimal soil moisture</h2>
-		  <div>
-		    <p class="detail placeholder">
-		      <span class="circle"></span>
-		      <span class="text-placeholder"></span>
-		    </p>
-		  </div>
-		  <div>
-		    <p class="detail placeholder">
-		      <span class="circle"></span>
-		      <span class="text-placeholder"></span>
-		    </p>
-		  </div>
-		  <div>
-		    <p class="detail placeholder">
-		      <span class="circle"></span>
-		      <span class="text-placeholder"></span>
-		    </p>
-		  </div>
-		  <div>
-		    <p class="detail placeholder">
-		      <span class="circle"></span>
-		      <span class="text-placeholder"></span>
-		    </p>
-		  </div>
-		  <div>
-		    <p class="detail placeholder">
-		      <span class="circle"></span>
-		      <span class="text-placeholder"></span>
-		    </p>
-		  </div>
-		  <div>
-		    <p class="detail placeholder">
-		      <span class="circle"></span>
-		      <span class="text-placeholder"></span>
-		    </p>
-		  </div>		  		  		  		  		  
 		  <div class="caret"></div>
 	  </div>	  
   </div>

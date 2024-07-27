@@ -1,21 +1,120 @@
-document.addEventListener('DOMContentLoaded', function() {
-  fetchWeatherData();
-});
+let soilMoistureChart = null;
 
+function initializeSoilMoistureChart() {
+  const ctx = document.getElementById('soilMoistureChart').getContext('2d');
+  
+  soilMoistureChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Soil Moisture'],
+      datasets: [{
+        data: [0],
+        backgroundColor: '#0461F9',
+        barThickness: 8,
+        borderRadius: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          display: false,
+        },
+        x: {
+          display: false,
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          enabled: false  // This disables the tooltip (hover label)
+        }
+      },
+    }
+  });
+}
+
+function updateSoilMoistureChart(data) {
+  if (!soilMoistureChart) {
+    initializeSoilMoistureChart();
+  }
+
+  const soilMoistureScore = data.conditions.soilMoisture.score;
+  soilMoistureChart.data.datasets[0].data = [soilMoistureScore];
+  soilMoistureChart.update();
+
+  // Update labels
+  updateMoistureLabels(soilMoistureScore);
+
+  // Update status
+  const statusElement = document.querySelector('#soil-moisture .soil-moisture-insight');
+  if (statusElement) {
+    const circle = statusElement.querySelector('.circle');
+    const placeholder = statusElement.querySelector('.text-placeholder');
+
+    // Create a new element for the actual content
+    const textContent = document.createElement('span');
+    textContent.className = 'text-content';
+    textContent.textContent = data.conditions.header.status;
+
+    // Update circle color (you may want to define a function for this)
+    circle.style.backgroundColor = '#A2C1DD';  // Default color, adjust as needed
+
+    // Hide placeholder and append actual content
+    placeholder.style.visibility = 'hidden';
+    placeholder.style.display = 'none';
+    statusElement.appendChild(textContent);
+
+    // Trigger fade-in animation
+    setTimeout(() => {
+      statusElement.classList.add('fade-in');
+    }, 150);
+
+    // Remove placeholder class to stop the loading animation
+    statusElement.classList.remove('placeholder');
+  }
+}
+
+function updateMoistureLabels(score) {
+  const labels = document.querySelectorAll('.moisture-labels .label');
+  labels.forEach(label => label.classList.remove('active'));
+
+  if (score < 33) {
+    labels[2].classList.add('active'); // Dry soil
+  } else if (score < 66) {
+    labels[1].classList.add('active'); // Optimal
+  } else {
+    labels[0].classList.add('active'); // Wet soil
+  }
+}
+
+// Modify your existing fetchWeatherData function
 function fetchWeatherData() {
-  const url = 'https://script.google.com/macros/s/AKfycbw1F7idjTKZMZ7UYLjQHPmSeAthHpVYPvXujpQTdl76Xl2D8usJoyOtp4D2-xz6TC2yew/exec';
+  const url = 'https://script.google.com/macros/s/AKfycbzWEj2n0S4-e4vtRNXllbOeMWs5l0jFwNTATDfnA2orB3_LzA3jkNeeZIFwCOoHdELx/exec';
   fetch(url)
     .then(response => response.json())
     .then(data => {
-      console.log('Received data:', data);  // Log the received data
+      console.log('Received data:', data);
       displayWeatherData(data);
       displayNextThreeDays(data);
       displayPastMonth(data);
+      updateSoilMoistureChart(data);
     })
     .catch(error => {
       console.error('Error:', error);
     });
 }
+
+// Call this when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+  initializeSoilMoistureChart();
+  fetchWeatherData();
+});
 
 function displayWeatherData(data) {
   const weatherDiv = document.getElementById('weather-data');

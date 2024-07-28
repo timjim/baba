@@ -252,6 +252,19 @@ header {
   background-size: contain;
 }
 
+.plus {
+  position: absolute;
+  right: 16px;  /* Adjust this value to move left/right */
+  top: 50%;  /* Center vertically */
+  transform: translateY(-50%);  /* Ensure perfect vertical centering */
+  width: 16px;  /* Adjust based on your SVG size */
+  height: 16px;  /* Adjust based on your SVG size */
+  background-image: url('assets/plus.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
 .detail {
   font-family: 'GeneralSans-Regular', sans-serif;
   font-size: 16px;
@@ -392,4 +405,100 @@ header {
 
 .chart-container, .moisture-labels {
   transition: opacity 0.5s ease-out;
+}
+
+#add-crop {
+  margin: 18px 0 !important;
+}
+
+.weather-table-container {
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: 0px 4px 4px 0px rgba(212,197,177,1);
+  margin-top: 16px;
+  margin-right: -16px;
+}
+
+#weatherTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'GeneralSans-Regular', sans-serif;
+  font-size: 14px;
+  background-color: rgba(255,255,255,0.62);
+  border-radius: 6px;
+}
+
+#weatherTable th,
+#weatherTable td {
+  border: 1px solid #C5C3C0;
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+#weatherTable th {
+  background-color: #F5F5F5;
+  font-family: 'GeneralSans-Medium', sans-serif;
+  font-weight: 500;
+}
+
+#weatherTable tr:nth-child(even) {
+  background-color: #FAFAFA;
+}
+
+#weatherTable tr:hover {
+  background-color: #F0F0F0;
+}
+
+#weatherTable tr {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+#weatherTable tr.fade-in {
+  opacity: 1;
+}
+
+#weatherTable td {
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+#weatherTable td.fade-in {
+  opacity: 1;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#weatherTable td.placeholder {
+  background-color: #f0f0f0;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+#weatherTable thead {
+  display: table-header-group;
+}
+
+#weatherTable th {
+  background-color: #F5F5F5;
+  font-family: 'GeneralSans-Medium', sans-serif;
+  font-weight: 500;
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #C5C3C0;
 }

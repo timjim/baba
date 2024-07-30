@@ -222,7 +222,7 @@ header {
   cursor: pointer;
 }
 
-.card-header {
+.card-header, #today {
   font-family: 'GeneralSans-Medium', sans-serif;
   font-weight: 500;
   font-size: 16px;
@@ -501,4 +501,105 @@ header {
   padding: 8px;
   text-align: left;
   border: 1px solid #C5C3C0;
+}
+
+#weather-today {
+  padding: 16px;
+  overflow: hidden; /* Hide overflow for the entire card */
+}
+
+#today {
+  margin: 3px 16px 3px 0;
+}
+
+#weather-today .card-header {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.weather-row {
+  display: flex;
+  align-items: center;
+  overflow-x: auto; /* Allow horizontal scrolling if needed */
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+}
+
+.weather-row::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+.weather-item {
+  display: flex;
+  align-items: center;
+  font-family: 'GeneralSans-Regular', sans-serif;
+  font-size: 16px;
+  color: #000000;
+  margin-left: 16px;
+  white-space: nowrap; /* Prevent wrapping */
+}
+
+.weather-item:first-child {
+  margin-left: 0;
+}
+
+.weather-item .circle {
+  flex-shrink: 0; /* Prevent circle from shrinking */
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background-color: #C5C3C0;
+}
+
+.weather-item .text-placeholder {
+  height: 24px;
+  width: 60px;
+  background-color: #C5C3C0;
+  border-radius: 4px;
+}
+
+.weather-item .text-placeholder {
+  position: relative;
+  overflow: hidden;
+}
+
+.weather-item .text-placeholder::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #C5C3C0, #D5D3D0, #C5C3C0);
+  animation: loading 1.5s infinite;
+  background-size: 200% 100%;
+}
+
+.weather-item .text-content {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.weather-item.fade-in .text-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.weather-item .text-content.animate {
+  animation: fadeInUp 0.5s ease-out forwards;
 }

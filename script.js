@@ -493,13 +493,34 @@ document.addEventListener('DOMContentLoaded', function() {
 function displayWeatherData(data) {
   const weatherDiv = document.getElementById('weather-data');
   const details = [
-    { value: data.today.rain, getColor: getRainColor },
-    { value: data.today.sunshine, getColor: getSunshineColor },
-    { value: data.today.temperature, getColor: getTemperatureColor }
+    { value: data.today.temperature, getColor: getTemperatureColor },
+    { value: data.today.rain, getColor: getRainColor }
   ];
 
   details.forEach((detail, index) => {
-    updateDetailElement(weatherDiv.children[index], detail);
+    const detailElement = weatherDiv.children[index];
+    const circle = detailElement.querySelector('.circle');
+    const placeholder = detailElement.querySelector('.text-placeholder');
+
+    // Update circle color
+    circle.style.backgroundColor = detail.getColor(detail.value);
+
+    // Stagger the replacement of placeholders
+    setTimeout(() => {
+      // Replace placeholder with actual content
+      const textContent = document.createElement('span');
+      textContent.className = 'text-content';
+      textContent.textContent = detail.value;
+
+      // Replace placeholder with new content
+      placeholder.parentNode.replaceChild(textContent, placeholder);
+
+      // Trigger fade-in and up animation
+      setTimeout(() => {
+        textContent.classList.add('animate');
+      }, 50); // Small delay to ensure the animation triggers
+
+    }, index * 200); // 200ms delay between each item
   });
 }
 

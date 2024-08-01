@@ -4,14 +4,18 @@ function initializeSoilMoistureChart() {
   const ctx = document.getElementById('soilMoistureChart').getContext('2d');
   
   soilMoistureChart = new Chart(ctx, {
-    type: 'bar',
+    type: 'line',
     data: {
-      labels: ['Soil Moisture'],
+      labels: ['D-6', 'D-5', 'D-4', 'D-3', 'D-2', 'D-1', 'Today'],
       datasets: [{
-        data: [0],
-        backgroundColor: '#0461F9',
-        barThickness: 8,
-        borderRadius: 2,
+        data: Array(7).fill(0),
+        borderColor: '#0461F9',
+        backgroundColor: 'rgba(4, 97, 249, 0.1)',
+        borderWidth: 2,
+        pointRadius: 3,
+        pointBackgroundColor: '#0461F9',
+        tension: 0.4,
+        fill: true
       }]
     },
     options: {
@@ -44,11 +48,11 @@ function updateSoilMoistureChart(data) {
     initializeSoilMoistureChart();
   }
 
-  const soilMoistureScore = data.conditions.soilMoisture.score;
-  soilMoistureChart.data.datasets[0].data = [soilMoistureScore];
+  const moistureData = data.conditions.soilMoisture.scores.reverse(); // Reverse to get today's data last
+  soilMoistureChart.data.datasets[0].data = moistureData;
   soilMoistureChart.update();
 
-  updateMoistureLabels(soilMoistureScore);
+  updateMoistureLabels(moistureData[moistureData.length - 1]); // Use today's value for the label
 
   const statusElement = document.querySelector('#soil-moisture .soil-moisture-insight');
   if (statusElement) {
@@ -73,7 +77,7 @@ function updateMoistureLabels(score) {
 }
 
 function fetchWeatherData() {
-  const url = 'https://script.google.com/macros/s/AKfycbyDCp4XrA6za3k7Yt9KXHiA-EDa6LvA2iop82SbJTifgHuc79itb36Uax4O61h9zpDbhg/exec';
+  const url = 'https://script.google.com/macros/s/AKfycbxxsu4EQbT-VQUWVdMQpXf_bbDyjrl6nx_OOif2sGO-CyllwTzS1dBT7C5e5uAJcOtghQ/exec';
   return fetch(url)
     .then(response => response.json())
     .then(data => {

@@ -348,9 +348,9 @@ header {
 }
 
 .chart-container {
-  width: 8px;
+  width: 100px;
   height: 100px;
-  background-color: #C5C3C0;
+  background-color: #E8DED1;
   border-radius: 2px;
   overflow: hidden;
 }
@@ -506,6 +506,7 @@ header {
 #weather-today {
   padding: 16px;
   overflow: hidden; /* Hide overflow for the entire card */
+  margin-bottom: 42px;
 }
 
 #today {

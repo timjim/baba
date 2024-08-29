@@ -23,8 +23,8 @@ function initializeSoilMoistureChart() {
       maintainAspectRatio: false,
       scales: {
         y: {
-          min: 20,
-          max: 80,
+          min: 0,
+          max: 100,
           display: false,
         },
         x: {
@@ -48,19 +48,67 @@ function updateSoilMoistureChart(data) {
     initializeSoilMoistureChart();
   }
 
-  const moistureData = data.conditions.soilMoisture.scores.reverse(); // Reverse to get today's data last
+  const moistureData = data.conditions.soilMoisture.scores.reverse();
   soilMoistureChart.data.datasets[0].data = moistureData;
   soilMoistureChart.update();
 
-  updateMoistureLabels(moistureData[moistureData.length - 1]); // Use today's value for the label
+  updateMoistureLabels(moistureData[moistureData.length - 1]);
 
-  const statusElement = document.querySelector('#soil-moisture .soil-moisture-insight');
-  if (statusElement) {
-    updateDetailElement(statusElement, {
-      value: data.conditions.header.status,
-      getColor: () => '#A2C1DD'
+  const headerElement = document.querySelector('#soil-moisture .card-header');
+  if (headerElement) {
+    updateHeaderElement(headerElement, {
+      value: data.conditions.header.status
     });
   }
+}
+
+function displayBestToPlant(data) {
+  const bestToPlantDiv = document.querySelector('#best-to-plant');
+  if (!bestToPlantDiv) {
+    console.error('Could not find the best to plant div');
+    return;
+  }
+
+  const headerElement = bestToPlantDiv.querySelector('.card-header');
+  const detailElement = bestToPlantDiv.querySelector('.detail');
+
+  if (headerElement) {
+    updateHeaderElement(headerElement, {
+      value: data.bestToPlant.mainInfo
+    });
+  }
+
+  if (detailElement) {
+    const detail = {
+      value: data.bestToPlant.description,
+      getColor: () => '#A3C48D'  // Using the green tone that is already available
+    };
+    updateDetailElement(detailElement, detail);
+  }
+}
+
+function updateHeaderElement(element, detail) {
+  if (!element) {
+    console.error('Could not find header element');
+    return;
+  }
+
+  const placeholder = element.querySelector('.text-placeholder');
+
+  if (!placeholder) {
+    console.error('Could not find placeholder for header');
+    return;
+  }
+
+  // Remove the placeholder
+  placeholder.remove();
+
+  // Set the text content
+  element.textContent = detail.value;
+
+  // Remove the placeholder class and add fade-in class
+  element.classList.remove('placeholder');
+  element.classList.add('fade-in');
 }
 
 function updateMoistureLabels(score) {
@@ -77,7 +125,7 @@ function updateMoistureLabels(score) {
 }
 
 function fetchWeatherData() {
-  const url = 'https://script.google.com/macros/s/AKfycbxxsu4EQbT-VQUWVdMQpXf_bbDyjrl6nx_OOif2sGO-CyllwTzS1dBT7C5e5uAJcOtghQ/exec';
+  const url = 'https://script.google.com/macros/s/AKfycbwS-lqcENXug2culiTn70Jy8dQJiU5rbEwaWGD0hbRpcC9BdHz7w98U-UZwUQQm6Sw9mQ/exec';
   return fetch(url)
     .then(response => response.json())
     .then(data => {
@@ -92,12 +140,21 @@ function fetchWeatherData() {
 
 function handleIndexPage() {
   initializeSoilMoistureChart();
+
+  // Show placeholders
+  const weatherDiv = document.getElementById('weather-data');
+  Array.from(weatherDiv.children).forEach(item => {
+    item.querySelector('.circle').style.backgroundColor = '#C5C3C0';
+    item.querySelector('.text-placeholder').style.display = 'inline-block';
+  });
+
   fetchWeatherData()
     .then(data => {
       displayWeatherData(data.homepage);
       displayNextThreeDays(data.homepage);
       displayPastMonth(data.homepage);
       updateSoilMoistureChart(data.homepage);
+      displayBestToPlant(data.homepage);  // Add this line
     });
 }
 
@@ -154,13 +211,13 @@ function displayWeatherData(data) {
 
     // Stagger the replacement of placeholders
     setTimeout(() => {
-      // Replace placeholder with actual content
+      // Create new text content element
       const textContent = document.createElement('span');
       textContent.className = 'text-content';
       textContent.textContent = detail.value;
 
       // Replace placeholder with new content
-      placeholder.parentNode.replaceChild(textContent, placeholder);
+      detailElement.replaceChild(textContent, placeholder);
 
       // Trigger fade-in and up animation
       setTimeout(() => {

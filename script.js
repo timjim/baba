@@ -207,7 +207,8 @@ document.addEventListener('DOMContentLoaded', function() {
     { id: 'see-all-plants', destination: 'early-access.html' },
 	  { id: 'add-crop-card', destination: 'early-access.html' },
 	  { id: 'location', destination: 'early-access.html' },
-	  { id: 'logo', destination: 'index.html' }
+	  { id: 'logo', destination: 'index.html' },
+	  { id: 'soil-moisture', destination: 'recent-weather.html' }
     // Add more elements here as needed
   ];
 

@@ -40,7 +40,7 @@
 			<div class="divider"></div>
 			
 			<div class="waitlist-container">
-			  <form id="waitlistForm" class="waitlist-form" method="POST" action="https://script.google.com/macros/s/AKfycbxHmn47PSONWmuhmWX9SaXBdDIUT4G5Sz2F-PBvwiMN10pllgqPiIndpVmGakGufblRdg/exec">
+			  <form id="waitlistForm" class="waitlist-form" method="POST" target="hidden_iframe" action="https://script.google.com/macros/s/AKfycbxHmn47PSONWmuhmWX9SaXBdDIUT4G5Sz2F-PBvwiMN10pllgqPiIndpVmGakGufblRdg/exec">
 			    <label for="email">Add your email address</label>
 			    <input type="email" id="email" name="email" required>
 			    
@@ -60,6 +60,7 @@
 			    <button type="submit">Join Now</button>
 			    <p class="note">Your privacy is sacred. We will only use your email to send you updates from Baba. You can choose to step away at any time.</p>
 			  </form>
+			  <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 			</div>
 		</div>
 

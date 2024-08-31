@@ -485,51 +485,66 @@ function reRollBestToPlant() {
 // BABA.earth Waitlist Form Script
 function initWaitlistForm() {
   const form = document.getElementById('waitlistForm');
-  if (!form) return;
+  const iframe = document.getElementById('hidden_iframe');
+  if (!form || !iframe) return;
 
   let isSubmitting = false;
+  let originalButtonText = '';
 
   form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
     if (isSubmitting) {
+      e.preventDefault();
       console.log('Form is already being submitted');
       return;
     }
 
     isSubmitting = true;
     const submitButton = form.querySelector('button[type="submit"]');
-    const originalButtonText = submitButton.textContent;
+    originalButtonText = submitButton.textContent;
     submitButton.textContent = 'Submitting...';
     submitButton.disabled = true;
-    
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
 
-    fetch('https://script.google.com/macros/s/AKfycbxHmn47PSONWmuhmWX9SaXBdDIUT4G5Sz2F-PBvwiMN10pllgqPiIndpVmGakGufblRdg/exec', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json'
+    // Set a timeout to reset the form state if we don't get a response
+    setTimeout(function() {
+      if (isSubmitting) {
+        resetFormState();
+        console.log('Form submission timed out');
+        alert("Hmm, something didn't go quite right. Please try again.");
       }
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.result === 'success') {
-        alert("You've joined Baba's circle. Together, we'll grow something wonderful.");
-        form.reset();
-      } else {
-        throw new Error('Submission failed');
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert("Hmm, something didn't go quite right. Please try again.");
-    })
-    .finally(() => {
-      isSubmitting = false;
-      submitButton.textContent = originalButtonText;
-      submitButton.disabled = false;
-    });
+    }, 10000); // 10 seconds timeout
   });
+
+  iframe.addEventListener('load', function() {
+    if (!isSubmitting) return; // Ignore initial load
+
+    resetFormState();
+
+    // Assume success if we can't access iframe content
+    let isSuccess = true;
+
+    try {
+      if (iframe.contentDocument) {
+        const iframeContent = iframe.contentDocument.body.textContent.trim();
+        const response = JSON.parse(iframeContent);
+        isSuccess = response.result === 'success';
+      }
+    } catch (error) {
+      console.error('Error reading iframe content:', error);
+      // We'll still assume success if we can't read the content
+    }
+
+    if (isSuccess) {
+      alert("You've joined Baba's circle. Together, we'll grow something wonderful.");
+      form.reset();
+    } else {
+      alert("Hmm, something didn't go quite right. Please try again.");
+    }
+  });
+
+  function resetFormState() {
+    const submitButton = form.querySelector('button[type="submit"]');
+    submitButton.textContent = originalButtonText;
+    submitButton.disabled = false;
+    isSubmitting = false;
+  }
 }

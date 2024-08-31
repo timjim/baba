@@ -1,4 +1,5 @@
 let soilMoistureChart = null;
+let babaData = null;
 
 function initializeSoilMoistureChart() {
   const ctx = document.getElementById('soilMoistureChart').getContext('2d');
@@ -63,6 +64,8 @@ function updateSoilMoistureChart(data) {
 }
 
 function displayBestToPlant(data) {
+  babaData = data; // Store the entire data object
+
   const bestToPlantDiv = document.querySelector('#best-to-plant');
   if (!bestToPlantDiv) {
     console.error('Could not find the best to plant div');
@@ -81,7 +84,7 @@ function displayBestToPlant(data) {
   if (detailElement) {
     const detail = {
       value: data.bestToPlant.description,
-      getColor: () => '#A3C48D'  // Using the green tone that is already available
+      getColor: () => '#A3C48D'
     };
     updateDetailElement(detailElement, detail);
   }
@@ -125,11 +128,12 @@ function updateMoistureLabels(score) {
 }
 
 function fetchWeatherData() {
-  const url = 'https://script.google.com/macros/s/AKfycbwS-lqcENXug2culiTn70Jy8dQJiU5rbEwaWGD0hbRpcC9BdHz7w98U-UZwUQQm6Sw9mQ/exec';
+  const url = 'https://script.google.com/macros/s/AKfycbz-t1gHBOeB7kkNd5bUxPtv_AILZNh9DRfyXbPo4_C7xKp92td4D0yrw3CqpP55EI4Ijw/exec';
   return fetch(url)
     .then(response => response.json())
     .then(data => {
       console.log('Received data:', data);
+      babaData = data; // Store the entire data object
       return data;
     })
     .catch(error => {
@@ -154,7 +158,7 @@ function handleIndexPage() {
       displayNextThreeDays(data.homepage);
       displayPastMonth(data.homepage);
       updateSoilMoistureChart(data.homepage);
-      displayBestToPlant(data.homepage);  // Add this line
+      displayBestToPlant(data);  // Pass the entire data object
     });
 }
 
@@ -191,6 +195,13 @@ document.addEventListener('DOMContentLoaded', function() {
     handleIndexPage();
   } else if (window.location.pathname.endsWith('today.html')) {
     handleTodayPage();
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const reRollButton = document.getElementById('re-roll');
+  if (reRollButton) {
+    reRollButton.addEventListener('click', reRollBestToPlant);
   }
 });
 
@@ -391,4 +402,59 @@ function getTemperatureColor(tempString) {
   const g = Math.round(startColor.g + (endColor.g - startColor.g) * percentage);
   const b = Math.round(startColor.b + (endColor.b - startColor.b) * percentage);
   return `rgb(${r}, ${g}, ${b})`;
+}
+
+function animateRoll(plants, duration = 2000) {
+  const headerElement = document.querySelector('#best-to-plant .card-header');
+  const detailElement = document.querySelector('#best-to-plant .detail');
+  
+  let startTime;
+  const totalPlants = plants.length;
+  
+  function animate(currentTime) {
+    if (!startTime) startTime = currentTime;
+    const elapsedTime = currentTime - startTime;
+    
+    // Calculate the current plant index based on elapsed time
+    const progress = Math.min(elapsedTime / duration, 1);
+    const easedProgress = 1 - Math.pow(1 - progress, 3); // Cubic ease-out
+    const currentIndex = Math.floor(easedProgress * totalPlants);
+    
+    if (currentIndex < totalPlants) {
+      const plant = plants[currentIndex];
+      
+      if (headerElement) {
+        headerElement.textContent = plant.name;
+      }
+      
+      if (detailElement) {
+        detailElement.querySelector('.text-content').textContent = plant.location;
+      }
+      
+      requestAnimationFrame(animate);
+    } else {
+      // Animation complete, set final values
+      const finalPlant = plants[totalPlants - 1];
+      if (headerElement) {
+        headerElement.textContent = finalPlant.name;
+      }
+      if (detailElement) {
+        detailElement.querySelector('.text-content').textContent = finalPlant.location;
+      }
+    }
+  }
+  
+  requestAnimationFrame(animate);
+}
+
+function reRollBestToPlant() {
+  if (!babaData || !babaData.bestToPlant || !Array.isArray(babaData.bestToPlant.plants) || babaData.bestToPlant.plants.length === 0) {
+    console.error('Best to plant data is not available or invalid');
+    return;
+  }
+  
+  // Shuffle the plants array
+  const shuffledPlants = [...babaData.bestToPlant.plants].sort(() => Math.random() - 0.5);
+  
+  animateRoll(shuffledPlants);
 }

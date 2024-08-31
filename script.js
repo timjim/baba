@@ -205,6 +205,29 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+  const clickableElements = [
+    { id: 'soil-moisture', destination: 'early-access.html' },
+    { id: 'see-all-plants', destination: 'early-access.html' },
+	  { id: 'add-crop-card', destination: 'early-access.html' }
+    // Add more elements here as needed
+  ];
+
+  function makeClickable(element, destination) {
+    if (element) {
+      element.style.cursor = 'pointer';
+      element.addEventListener('click', function() {
+        window.location.href = destination;
+      });
+    }
+  }
+
+  clickableElements.forEach(item => {
+    const element = document.getElementById(item.id);
+    makeClickable(element, item.destination);
+  });
+});
+
 function displayWeatherData(data) {
   const weatherDiv = document.getElementById('weather-data');
   const details = [

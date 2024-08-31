@@ -511,7 +511,7 @@ function initWaitlistForm() {
         console.log('Form submission timed out');
         alert("Hmm, something didn't go quite right. Please try again.");
       }
-    }, 10000); // 10 seconds timeout
+    }, 5000); // 5 seconds timeout
   });
 
   iframe.addEventListener('load', function() {

@@ -482,20 +482,31 @@ function reRollBestToPlant() {
   animateRoll(shuffledPlants);
 }
 
+// BABA.earth Waitlist Form Script
 function initWaitlistForm() {
   const form = document.getElementById('waitlistForm');
   if (!form) return;
 
+  let isSubmitting = false;
+
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     
+    if (isSubmitting) {
+      console.log('Form is already being submitted');
+      return;
+    }
+
+    isSubmitting = true;
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.textContent;
+    submitButton.textContent = 'Submitting...';
+    submitButton.disabled = true;
+    
     const formData = new FormData(this);
     const data = Object.fromEntries(formData.entries());
-    
-    // Convert multiple select to comma-separated string
-    data.features = formData.getAll('features').join(', ');
 
-    fetch('YOUR_GOOGLE_APPS_SCRIPT_URL', {
+    fetch('https://script.google.com/macros/s/AKfycbxHmn47PSONWmuhmWX9SaXBdDIUT4G5Sz2F-PBvwiMN10pllgqPiIndpVmGakGufblRdg/exec', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
@@ -505,15 +516,20 @@ function initWaitlistForm() {
     .then(response => response.json())
     .then(data => {
       if (data.result === 'success') {
-        alert('Thank you for joining the waitlist!');
+        alert("You've joined Baba's circle. Together, we'll grow something wonderful.");
         form.reset();
       } else {
-        alert('There was an error. Please try again.');
+        throw new Error('Submission failed');
       }
     })
     .catch(error => {
       console.error('Error:', error);
-      alert('There was an error. Please try again.');
+      alert("Hmm, something didn't go quite right. Please try again.");
+    })
+    .finally(() => {
+      isSubmitting = false;
+      submitButton.textContent = originalButtonText;
+      submitButton.disabled = false;
     });
   });
 }

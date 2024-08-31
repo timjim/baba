@@ -726,37 +726,6 @@ header {
     color: #FF6347;
 }
 
-/* New styles for checkboxes */
-.feature-checkboxes {
-    border: none;
-    padding: 0;
-    margin-bottom: var(--space-m);
-}
-
-.feature-checkboxes legend {
-    font-family: 'GeneralSans-Medium', sans-serif;
-    margin-bottom: var(--space-xs);
-    font-weight: medium;
-}
-
-.checkbox-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: var(--space-xs);
-}
-
-.checkbox-item input[type="checkbox"] {
-    width: auto;
-    margin-right: var(--space-xs);
-    margin-bottom: 0;
-}
-
-.checkbox-item label {
-    margin-bottom: 0;
-    font-family: 'GeneralSans-Regular', sans-serif;
-    font-weight: medium;
-}
-
 /* Responsive adjustments */
 @media (max-width: 428px) {
     .waitlist-container {

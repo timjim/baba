@@ -525,8 +525,7 @@ function initWaitlistForm() {
     try {
       if (iframe.contentDocument) {
         const iframeContent = iframe.contentDocument.body.textContent.trim();
-        const response = JSON.parse(iframeContent);
-        isSuccess = response.result === 'success';
+        isSuccess = iframeContent === 'success';
       }
     } catch (error) {
       console.error('Error reading iframe content:', error);

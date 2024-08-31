@@ -191,25 +191,23 @@ function addPlaceholderRows() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+	if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
     handleIndexPage();
   } else if (window.location.pathname.endsWith('today.html')) {
     handleTodayPage();
   }
-});
 
-document.addEventListener('DOMContentLoaded', function() {
   const reRollButton = document.getElementById('re-roll');
   if (reRollButton) {
     reRollButton.addEventListener('click', reRollBestToPlant);
   }
-});
 
-document.addEventListener('DOMContentLoaded', function() {
   const clickableElements = [
     { id: 'soil-moisture', destination: 'early-access.html' },
     { id: 'see-all-plants', destination: 'early-access.html' },
-	  { id: 'add-crop-card', destination: 'early-access.html' }
+	  { id: 'add-crop-card', destination: 'early-access.html' },
+	  { id: 'location', destination: 'early-access.html' },
+	  { id: 'logo', destination: 'index.html' }
     // Add more elements here as needed
   ];
 
@@ -226,6 +224,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const element = document.getElementById(item.id);
     makeClickable(element, item.destination);
   });
+
+  initWaitlistForm();
 });
 
 function displayWeatherData(data) {

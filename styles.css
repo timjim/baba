@@ -95,6 +95,18 @@ body {
   justify-content: center;
 }
 
+.early-access p {
+  margin-bottom: 18px;
+}
+
+.early-access ul {
+  padding-inline-start: 24px;
+}
+
+.early-access li {
+  margin-bottom: 16px;
+}
+
 #re-roll, #see-all-plants {
   border-radius: 6px;
   padding: 10px 24px;
@@ -112,6 +124,7 @@ body {
 
 #see-all-plants {
   border: #CBB292 1px solid;
+  color: black;
 }
 
 .container {
@@ -351,10 +364,10 @@ header {
 }
 
 .divider {
-  width: calc(100% + 32px);
+  width: 100%;
   height: 3px;
   background-color: #CBB292;
-  margin: 38px -16px; /* Adjust this value to control the vertical spacing around the divider */
+  margin: 24px 0; /* Adjust this value to control the vertical spacing around the divider */
 }
 
 @keyframes fadeIn {
@@ -646,4 +659,74 @@ header {
 
 .card-header.fade-in {
   animation: fadeIn 0.5s ease-out forwards;
+}
+
+#best-to-plant .card-header {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+#best-to-plant .detail .text-content {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* or however many lines you want to show */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.waitlist-form label {
+    display: block;
+    margin-bottom: var(--space-xs);
+    color: #000;
+    font-family: 'GeneralSans-Medium', sans-serif;
+    font-weight: medium;
+}
+
+.waitlist-form input,
+.waitlist-form select {
+    width: 100%;
+    padding: var(--space-s);
+    margin-bottom: var(--space-m);
+    border: 1px solid #CBB292;
+    border-radius: 6px;
+    background-color: rgba(212, 197, 177, 0.5);
+    font-family: 'GeneralSans-Regular', sans-serif;
+    font-size: 16px;
+    font-weight: medium;
+}
+
+.waitlist-form button {
+    background-color: #000;
+    color: #FAFAF9;
+    padding: var(--space-s) var(--space-m);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    font-family: 'GeneralSans-Medium', sans-serif;
+    font-weight: bold;
+}
+
+.waitlist-form button:hover {
+    background-color: #333;
+}
+
+.waitlist-form .required {
+    color: #FF6347;
+}
+
+/* Responsive adjustments */
+@media (max-width: 428px) {
+    .waitlist-container {
+        padding: var(--space-s);
+    }
+}
+
+.note {
+  font-size: 14px;
+  margin-top: 16px;
 }

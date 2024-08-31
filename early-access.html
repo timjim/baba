@@ -1,1 +1,83 @@
-You're seein
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BABA.earth | Grow with confidence</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js" defer></script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+	<link rel="alternate icon" type="image/png" href="/assets/favicon-16x16.png" sizes="16x16">
+	<link rel="alternate icon" type="image/png" href="/assets/favicon-32x32.png" sizes="32x32">
+	<link rel="alternate icon" type="image/png" href="/assets/favicon-48x48.png" sizes="48x48">
+	<link rel="alternate icon" type="image/png" href="/assets/favicon-180x180.png" sizes="180x180">	
+	<link rel="alternate icon" type="image/png" href="/assets/favicon-192x192.png">
+	<link rel="apple-touch-icon" href="/assets/favicon-192x192.png">
+	<link rel="manifest" href="/manifest.json">
+	<link rel="preload" href="assets/baba-bg.png" as="image">
+</head>
+<body>
+	<div class="container early-access">
+	  <header>
+	  	<h1 class="visually-hidden">BABA.earth</h1>
+	    <img src="assets/baba-logo.svg" alt="BABA.earth" class="logo" id="logo">
+	  </header>
+	  <div class="header-row">
+		   <div class="sub-header"><h2>Early access</h2></div>
+	  </div>
+	  <div class="card">
+	    <p style="margin-top: 8px">Welcome, dear grower.</p>
+
+	  	<p>Baba has taken her first steps at the Roots Allotments in Meadow Hill Fields.</p>
+
+	  	<p>There is so much more on the horizon. Baba is on a mission to help you grow better produce and garden plants, in harmony with the earth; she does this by using a blend of technology and timeless wisdom. Be a part of Baba's journey by joining the waitlist.</p>
+			<div class="divider"></div>
+			<h3><span style="padding-right: 4px;">🏡</span> Get Baba in your area</h3>
+			<p>Baba is expanding to new locations — to where her waitlist members are, first.</p>
+			<h3><span style="padding-right: 4px;">🔑</span> Get early access</h3>
+			<p>Members are the first to use new features, get sneak peeks, and shape the future of Baba.</p>
+			<div class="divider"></div>
+			
+			<div class="waitlist-container">
+			  <form id="waitlistForm" class="waitlist-form">
+			    <label for="email">Add your email address <span class="required">*</span></label>
+			    <input type="email" id="email" name="email" required>
+			    
+			    <label for="usingBaba">Are you using Baba in Meadow Hill Fields?</label>
+			    <select id="usingBaba" name="usingBaba">
+			      <option value="">Select an option</option>
+			      <option value="Yes">Yes</option>
+			      <option value="No">No</option>
+			    </select>
+			    
+			    <label for="nextLocation">Where would you like to see Baba next?</label>
+			    <input type="text" id="nextLocation" name="nextLocation">
+			    
+			    <label for="features">Which features are you most excited about?</label>
+			    <select id="features" name="features" multiple>
+			      <option value="Weather Predictions">Weather Predictions</option>
+			      <option value="Crop Recommendations">Crop Recommendations</option>
+			      <option value="Soil Analysis">Soil Analysis</option>
+			      <option value="Community Features">Community Features</option>
+			    </select>
+			    
+			    <button type="submit">Join Now</button>
+			    <p class="note">Your privacy is sacred. We will only use your email to send you updates from Baba. You can choose to step away at any time.</p>
+			  </form>
+			</div>
+		</div>
+
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const container = document.querySelector('.container');
+      const img = new Image();
+      img.src = 'assets/baba-bg.png';
+      img.onload = function() {
+        container.classList.add('loaded');
+      };
+    });
+  </script>
+</body>
+</html>

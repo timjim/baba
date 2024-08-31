@@ -695,9 +695,8 @@ header {
     border: 1px solid #CBB292;
     border-radius: 6px;
     background-color: rgba(212, 197, 177, 0.5);
-    font-family: 'GeneralSans-Regular', sans-serif;
+    font-family: 'GeneralSans-Medium', sans-serif;
     font-size: 16px;
-    font-weight: medium;
 }
 
 .waitlist-form textarea {
@@ -714,8 +713,7 @@ header {
     cursor: pointer;
     width: 100%;
     font-size: 16px;
-    font-family: 'GeneralSans-Medium', sans-serif;
-    font-weight: bold;
+    font-family: 'GeneralSans-Bold', sans-serif;
 }
 
 .waitlist-form button:hover {

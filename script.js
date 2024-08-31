@@ -481,3 +481,39 @@ function reRollBestToPlant() {
   
   animateRoll(shuffledPlants);
 }
+
+function initWaitlistForm() {
+  const form = document.getElementById('waitlistForm');
+  if (!form) return;
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Convert multiple select to comma-separated string
+    data.features = formData.getAll('features').join(', ');
+
+    fetch('YOUR_GOOGLE_APPS_SCRIPT_URL', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.result === 'success') {
+        alert('Thank you for joining the waitlist!');
+        form.reset();
+      } else {
+        alert('There was an error. Please try again.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('There was an error. Please try again.');
+    });
+  });
+}

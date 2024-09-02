@@ -794,3 +794,7 @@ select option {
   color: transparent;
   text-shadow: 0 0 0 #000000;
 }
+
+#problems {
+  margin-bottom: 8px;
+}

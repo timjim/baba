@@ -785,3 +785,12 @@ select option {
     font-size: 16px; /* Prevent zoom on focus in iOS Safari */
   }
 }
+
+.waitlist-form select option[value=""][disabled] {
+  color: #757575;
+}
+
+.waitlist-form select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #000000;
+}

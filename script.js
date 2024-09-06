@@ -582,7 +582,7 @@ function createRainChart(chartData) {
       labels: processedData.map(entry => entry.date),
       datasets: [
         {
-          label: 'Precipitation',
+          label: 'Rain',
           data: processedData.map(entry => entry.precipitation),
           backgroundColor: '#0461F9',
           borderRadius: 2,

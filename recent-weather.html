@@ -19,7 +19,7 @@
 	<link rel="preload" href="assets/baba-bg.png" as="image">
 </head>
 <body>
-	<div class="container">
+	<div class="container recent-weather">
 	  <header>
 	  	<h1 class="visually-hidden">BABA.earth</h1>
 	    <img src="assets/baba-logo.svg" alt="BABA.earth" class="logo" id="logo">
@@ -33,39 +33,30 @@
 	  	<div class="editable-field" id="location">Meadow Hill Fields, Roots Allotments, Coulsdon, UK</div>
 	  </div>
 	  <div class="header-row">
-	  	<div class="sub-header"><h2>Recent weather (coming soon)</h2></div>
+	  	<div class="sub-header"><h2>Recent weather</h2></div>
 	  </div>
 	  <p style="margin-bottom: 16px;">Rain adds water to the soil, while the sun and wind evaporate it. Baba looks at historical and forecast weather data to estimate soil moisture.</p>
-		<div class="card" id="soil-moisture-changes">
-			<h2 class="card-header">Rain, drainage, and evaporation</h2>
-		  <div class="soil-moisture-content">
+		<div id="soil-moisture-changes" class="card">
+		  <h2 class="card-header">Rain, drainage, and evaporation (mm)</h2>
+		  <div class="rain-content">
 		    <div class="chart-container">
-		      <canvas id="soilMoistureChart"></canvas>
+		      <canvas id="rainChart"></canvas>
 		    </div>
-		  </div>  
+		  </div>
 		</div>
 		<div class="card" id="temperature">
 			<h2 class="card-header">Temperature</h2>
-		  <div class="soil-moisture-content">
-		    <div class="chart-container">
-		      <canvas id="soilMoistureChart"></canvas>
-		    </div>
+		  <div class="temperature-content">
 		  </div>  
 		</div> 
 		<div class="card" id="wind">
 			<h2 class="card-header">Wind</h2>
-		  <div class="soil-moisture-content">
-		    <div class="chart-container">
-		      <canvas id="soilMoistureChart"></canvas>
-		    </div>
+		  <div class="wind-content">
 		  </div>  
 		</div>	
 		<div class="card" id="photosynthesis">
 			<h2 class="card-header">Photosynthesis</h2>
-		  <div class="soil-moisture-content">
-		    <div class="chart-container">
-		      <canvas id="soilMoistureChart"></canvas>
-		    </div>
+		  <div class="photosynthesis-content">
 		  </div>  
 		</div>			
   </div>

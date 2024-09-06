@@ -128,11 +128,11 @@ function updateMoistureLabels(score) {
 }
 
 function fetchWeatherData() {
-  const url = 'https://script.google.com/macros/s/AKfycbz-t1gHBOeB7kkNd5bUxPtv_AILZNh9DRfyXbPo4_C7xKp92td4D0yrw3CqpP55EI4Ijw/exec';
+  const url = 'https://script.google.com/macros/s/AKfycbwX6DAOZxADhHn1XdItqAMG6-mf52byX6ijldFboM4mxcs-EDf79JsEZLVQ07Je5z7F7Q/exec';
   return fetch(url)
     .then(response => response.json())
     .then(data => {
-      console.log('Received data:', data);
+      console.log('Received data:', JSON.stringify(data, null, 2));
       babaData = data; // Store the entire data object
       return data;
     })
@@ -195,6 +195,8 @@ document.addEventListener('DOMContentLoaded', function() {
     handleIndexPage();
   } else if (window.location.pathname.endsWith('today.html')) {
     handleTodayPage();
+  } else if (window.location.pathname.endsWith('recent-weather.html')) {
+    handleRecentWeatherPage();
   }
 
   const reRollButton = document.getElementById('re-roll');
@@ -547,4 +549,198 @@ function initWaitlistForm() {
     submitButton.disabled = false;
     isSubmitting = false;
   }
+}
+
+function createRainChart(chartData) {
+  const ctx = document.getElementById('rainChart').getContext('2d');
+  
+  // Prepare the data
+  const processedData = chartData.map(entry => ({
+    date: new Date(entry.date),
+    precipitation: parseFloat(entry.precipitation) || 0,
+    drainage: parseFloat(entry.dailyDrainage) || 0,
+    evapotranspiration: parseFloat(entry.evapotranspiration) || 0,
+    type: entry.type
+  }));
+
+  // Sort data by date, oldest to newest
+  processedData.sort((a, b) => a.date - b.date);
+
+  // Find indices for current date and start of forecast
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
+  const currentDateIndex = processedData.findIndex(entry => entry.date >= today);
+  const forecastStartIndex = processedData.findIndex(entry => entry.type === 'Forecast');
+
+  console.log('Processed Data:', processedData);
+  console.log('Current Date Index:', currentDateIndex);
+  console.log('Forecast Start Index:', forecastStartIndex);
+
+  const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: processedData.map(entry => entry.date),
+      datasets: [
+        {
+          label: 'Precipitation',
+          data: processedData.map(entry => entry.precipitation),
+          backgroundColor: '#0461F9',
+          borderRadius: 2,
+          borderSkipped: false,
+        },
+        {
+          label: 'Drainage',
+          data: processedData.map(entry => -entry.drainage),
+          backgroundColor: '#A2C1DD',
+          borderRadius: 2,
+          borderSkipped: false,
+        },
+        {
+          label: 'Evapotranspiration',
+          data: processedData.map(entry => -entry.evapotranspiration),
+          backgroundColor: '#FF6347',
+          borderRadius: 2,
+          borderSkipped: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'x',
+      scales: {
+        x: {
+          stacked: true,
+          grid: {
+            display: true,
+            drawOnChartArea: true,
+            drawTicks: false,
+            color: (context) => {
+              console.log('Grid context:', context);
+              if (context.index === currentDateIndex || context.index === forecastStartIndex) {
+                return 'rgba(0, 0, 0, 0.5)'; // Color for the specific gridlines
+              }
+              return 'rgba(0, 0, 0, 0)'; // Transparent for other gridlines
+            },
+            lineWidth: (context) => {
+              if (context.index === currentDateIndex || context.index === forecastStartIndex) {
+                return 2; // Width for the specific gridlines
+              }
+              return 0; // No line for other gridlines
+            }
+          },
+          ticks: {
+            align: 'center',
+            maxRotation: 0,
+            minRotation: 0,
+            callback: function(value, index, values) {
+              const date = new Date(this.getLabelForValue(value));
+              return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+            }
+          }
+        },
+        y: {
+          position: 'right',
+          stacked: true,
+          title: {
+            display: false
+          }
+        }
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            title: function(context) {
+              const date = new Date(context[0].label);
+              return date.toLocaleDateString('en-GB', { 
+                weekday: 'short', 
+                day: 'numeric', 
+                month: 'short', 
+                year: 'numeric' 
+              }).replace(',', '');
+            },
+            label: function(context) {
+              let label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              if (context.parsed.y !== null) {
+                label += Math.abs(context.parsed.y).toFixed(1) + ' mm';
+              }
+              return label;
+            }
+          }
+        },
+        legend: {
+          align: 'end',
+          labels: {
+            boxWidth: 15,
+            padding: 15
+          }
+        }
+      }
+    }
+  });
+
+  // Scroll to the right end of the chart
+  setTimeout(() => {
+    const chartContainer = document.querySelector('.rain-content');
+    if (chartContainer) {
+      chartContainer.scrollLeft = chartContainer.scrollWidth;
+    }
+  }, 100);
+
+  return chart;
+}
+
+function handleRecentWeatherPage() {
+  const chartContainer = document.querySelector('.chart-container');
+  if (chartContainer) {
+    chartContainer.innerHTML = '<canvas id="rainChart"></canvas>';
+  }
+
+  fetchWeatherData()
+    .then(data => {
+      console.log('Received data:', data);
+
+      if (!data || !data.recentRainfall || !Array.isArray(data.recentRainfall.recent)) {
+        throw new Error('Recent rainfall data is missing or in an unexpected format');
+      }
+
+      let chartData = [...data.recentRainfall.recent];
+
+      // Check if forecast data exists and is an array before adding it
+      if (data.recentRainfall.forecast && Array.isArray(data.recentRainfall.forecast)) {
+        // Sort forecast data by date, oldest to newest
+        const sortedForecast = data.recentRainfall.forecast.sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        // Take only the first 3 forecast dates (closest to present)
+        const recentForecast = sortedForecast.slice(0, 3);
+        
+        // Add these to the beginning of chartData
+        chartData = [...recentForecast, ...chartData];
+      }
+
+      console.log('Chart data:', chartData);
+
+      if (chartData.length === 0) {
+        throw new Error('No valid chart data available');
+      }
+
+      createRainChart(chartData);
+
+      // Scroll to the right end of the chart
+      setTimeout(() => {
+        const chartContainer = document.querySelector('.rain-content');
+        if (chartContainer) {
+          chartContainer.scrollLeft = chartContainer.scrollWidth;
+        }
+      }, 100);
+    })
+    .catch(error => {
+      console.error('Error loading recent weather data:', error);
+      if (chartContainer) {
+        chartContainer.innerHTML = `<p>Error loading chart data: ${error.message}. Please try again later.</p>`;
+      }
+    });
 }

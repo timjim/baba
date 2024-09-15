@@ -811,7 +811,8 @@ header {
 /* Add these styles to your styles.css file */
 
 /* Specific styles for the recent weather page */
-.recent-weather .rain-content {
+.recent-weather .rain-content,
+.recent-weather .temperature-content {
   overflow-x: auto;
   width: calc(100% + 16px);
   margin-bottom: 20px;
@@ -827,31 +828,37 @@ header {
 }
 
 /* Add some padding to the chart container to ensure it's not cut off */
-.recent-weather #soil-moisture-changes {
+.recent-weather #soil-moisture-changes,
+.recent-weather #temperature {
   padding-bottom: 16px;
 }
 
 /* Ensure the chart fills its container */
-.recent-weather #rainChart {
+.recent-weather #rainChart,
+.recent-weather #tempChart {
   width: 100%;
   height: 100%;
 }
 
 /* Style for the horizontal scrollbar */
-.recent-weather .rain-content::-webkit-scrollbar {
+.recent-weather .rain-content::-webkit-scrollbar,
+.recent-weather .temperature-content::-webkit-scrollbar {
   height: 8px;
 }
 
-.recent-weather .rain-content::-webkit-scrollbar-track {
+.recent-weather .rain-content::-webkit-scrollbar-track,
+.recent-weather .temperature-content::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 4px;
 }
 
-.recent-weather .rain-content::-webkit-scrollbar-thumb {
+.recent-weather .rain-content::-webkit-scrollbar-thumb,
+ .recent-weather .temperature-content::-webkit-scrollbar-thumb{
   background: #888;
   border-radius: 4px;
 }
 
-.recent-weather .rain-content::-webkit-scrollbar-thumb:hover {
+.recent-weather .rain-content::-webkit-scrollbar-thumb:hover,
+.recent-weather .temperature-content::-webkit-scrollbar-thumb:hover  {
   background: #555;
 }

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BABA.earth | Recent weather </title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
   <script src="script.js" defer></script>
   <script data-goatcounter="https://baba.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <link rel="stylesheet" href="styles.css">
@@ -45,8 +46,11 @@
 		  </div>
 		</div>
 		<div class="card" id="temperature">
-			<h2 class="card-header">Temperature</h2>
+			<h2 class="card-header">Temperature (°C)</h2>
 		  <div class="temperature-content">
+		    <div class="chart-container">
+		      <canvas id="tempChart"></canvas>
+		    </div>		  	
 		  </div>  
 		</div> 
 		<div class="card" id="wind">

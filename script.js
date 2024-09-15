@@ -128,7 +128,7 @@ function updateMoistureLabels(score) {
 }
 
 function fetchWeatherData() {
-  const url = 'https://script.google.com/macros/s/AKfycbwX6DAOZxADhHn1XdItqAMG6-mf52byX6ijldFboM4mxcs-EDf79JsEZLVQ07Je5z7F7Q/exec';
+  const url = 'https://script.google.com/macros/s/AKfycbykr2iKjOSvJq5NLxzR6unDb4iXNVV4GoeWnqs330jG8UyP4DJAJ6_1KjzGYLwxmUmrCA/exec';
   return fetch(url)
     .then(response => response.json())
     .then(data => {
@@ -553,51 +553,36 @@ function initWaitlistForm() {
 
 function createRainChart(chartData) {
   const ctx = document.getElementById('rainChart').getContext('2d');
-  
-  // Prepare the data
-  const processedData = chartData.map(entry => ({
-    date: new Date(entry.date),
-    precipitation: parseFloat(entry.precipitation) || 0,
-    drainage: parseFloat(entry.dailyDrainage) || 0,
-    evapotranspiration: parseFloat(entry.evapotranspiration) || 0,
-    type: entry.type
-  }));
 
-  // Sort data by date, oldest to newest
-  processedData.sort((a, b) => a.date - b.date);
-
-  // Find indices for current date and start of forecast
+  // Find today's date
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
-  const currentDateIndex = processedData.findIndex(entry => entry.date >= today);
-  const forecastStartIndex = processedData.findIndex(entry => entry.type === 'Forecast');
+  today.setHours(0, 0, 0, 0);
 
-  console.log('Processed Data:', processedData);
-  console.log('Current Date Index:', currentDateIndex);
-  console.log('Forecast Start Index:', forecastStartIndex);
+  // Find the index of today in the data
+  const todayIndex = chartData.findIndex(entry => entry.date >= today);
 
   const chart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: processedData.map(entry => entry.date),
+      labels: chartData.map(entry => entry.date),
       datasets: [
         {
           label: 'Rain',
-          data: processedData.map(entry => entry.precipitation),
+          data: chartData.map(entry => ({ x: entry.date, y: entry.precipitation })),
           backgroundColor: '#0461F9',
           borderRadius: 2,
           borderSkipped: false,
         },
         {
           label: 'Drainage',
-          data: processedData.map(entry => -entry.drainage),
+          data: chartData.map(entry => ({ x: entry.date, y: -entry.dailyDrainage })),
           backgroundColor: '#A2C1DD',
           borderRadius: 2,
           borderSkipped: false,
         },
         {
-          label: 'Evapotranspiration',
-          data: processedData.map(entry => -entry.evapotranspiration),
+          label: 'Evaporation',
+          data: chartData.map(entry => ({ x: entry.date, y: -entry.evapotranspiration })),
           backgroundColor: '#FF6347',
           borderRadius: 2,
           borderSkipped: false,
@@ -607,36 +592,29 @@ function createRainChart(chartData) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      indexAxis: 'x',
       scales: {
         x: {
+          type: 'time',
+          time: {
+            unit: 'day',
+            displayFormats: {
+              day: 'd MMM'
+            }
+          },
           stacked: true,
           grid: {
             display: true,
-            drawOnChartArea: true,
+            drawOnChartArea: false,
             drawTicks: false,
-            color: (context) => {
-              console.log('Grid context:', context);
-              if (context.index === currentDateIndex || context.index === forecastStartIndex) {
-                return 'rgba(0, 0, 0, 0.5)'; // Color for the specific gridlines
-              }
-              return 'rgba(0, 0, 0, 0)'; // Transparent for other gridlines
-            },
-            lineWidth: (context) => {
-              if (context.index === currentDateIndex || context.index === forecastStartIndex) {
-                return 2; // Width for the specific gridlines
-              }
-              return 0; // No line for other gridlines
-            }
           },
           ticks: {
-            align: 'center',
+            align: 'start',
             maxRotation: 0,
             minRotation: 0,
-            callback: function(value, index, values) {
-              const date = new Date(this.getLabelForValue(value));
-              return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-            }
+            font: {
+              size: 12
+            },
+            padding: 8
           }
         },
         y: {
@@ -651,8 +629,7 @@ function createRainChart(chartData) {
         tooltip: {
           callbacks: {
             title: function(context) {
-              const date = new Date(context[0].label);
-              return date.toLocaleDateString('en-GB', { 
+              return new Date(context[0].parsed.x).toLocaleDateString('en-GB', { 
                 weekday: 'short', 
                 day: 'numeric', 
                 month: 'short', 
@@ -679,68 +656,299 @@ function createRainChart(chartData) {
           }
         }
       }
-    }
+    },
+    plugins: [{
+      afterDraw: chart => {
+        const { ctx, chartArea, scales } = chart;
+        if (todayIndex !== -1) {
+          const x = scales.x.getPixelForValue(chartData[todayIndex].date);
+          ctx.save();
+          ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(x, chartArea.top);
+          ctx.lineTo(x, chartArea.bottom);
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+    }]
   });
-
-  // Scroll to the right end of the chart
-  setTimeout(() => {
-    const chartContainer = document.querySelector('.rain-content');
-    if (chartContainer) {
-      chartContainer.scrollLeft = chartContainer.scrollWidth;
-    }
-  }, 100);
 
   return chart;
 }
 
+function createTemperatureChart(chartData) {
+  const ctx = document.getElementById('tempChart').getContext('2d');
+  
+  // Find today's date
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Find indices for current date and start of forecast
+  const currentDateIndex = chartData.findIndex(entry => entry.date >= today);
+  const forecastStartIndex = chartData.findIndex(entry => entry.type === 'Forecast');
+
+  // Use all data, including 3 forecast days
+  let chartDataToUse = chartData;
+  if (forecastStartIndex !== -1) {
+    const forecastData = chartData.slice(forecastStartIndex);
+    const historicalData = chartData.slice(0, forecastStartIndex);
+    chartDataToUse = [...historicalData, ...forecastData.slice(0, 3)];
+  }
+
+  // Find the overall temperature range
+  const allTemps = chartDataToUse.flatMap(entry => [entry.minTemp, entry.maxTemp]).filter(temp => temp !== null);
+  const minTemp = Math.min(...allTemps);
+  const maxTemp = Math.max(...allTemps);
+
+  // Calculate y-axis bounds with 5°C increments
+  const yMin = Math.floor(minTemp / 5) * 5;
+  const yMax = Math.ceil(maxTemp / 5) * 5;
+
+  // Create a temperature color scale
+  const temperatureColorScale = createTemperatureColorScale(yMin, yMax);
+
+  const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: chartDataToUse.map(entry => entry.date),
+      datasets: [{
+        label: 'Temperature Range',
+        data: chartDataToUse.map(entry => ({
+          x: entry.date,
+          y: entry.minTemp !== null && entry.maxTemp !== null ? [entry.minTemp, entry.maxTemp] : null
+        })),
+        backgroundColor: chartDataToUse.map(entry => {
+          if (entry.minTemp === null || entry.maxTemp === null) {
+            return 'rgba(200, 200, 200, 0.5)'; // Light gray for missing data
+          }
+          return ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+        }),
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1,
+        borderRadius: 2,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            unit: 'day',
+            displayFormats: {
+              day: 'd MMM'
+            }
+          },
+          grid: {
+            display: true,
+            drawOnChartArea: false,
+            drawTicks: false,
+          },
+          ticks: {
+            align: 'start',
+            maxRotation: 0,
+            minRotation: 0,
+            font: {
+              size: 12
+            },
+            padding: 8
+          }
+        },
+        y: {
+          position: 'right',
+          min: yMin,
+          max: yMax,
+          ticks: {
+            stepSize: 5,
+            callback: function(value) {
+              return value;
+            }
+          },
+          title: {
+            display: false
+          }
+        }
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            title: function(context) {
+              const date = new Date(context[0].parsed.x);
+              return date.toLocaleDateString('en-GB', { 
+                weekday: 'short', 
+                day: 'numeric', 
+                month: 'short', 
+                year: 'numeric' 
+              }).replace(',', '');
+            },
+            label: function(context) {
+              if (context.raw.y === null) {
+                return 'No data available';
+              }
+              const minTemp = context.raw.y[0].toFixed(1);
+              const maxTemp = context.raw.y[1].toFixed(1);
+              return [`Min: ${minTemp}°C`, `Max: ${maxTemp}°C`];
+            }
+          }
+        },
+        legend: {
+          display: false
+        }
+      }
+    },
+    plugins: [{
+      afterDraw: (chart) => {
+        const ctx = chart.ctx;
+        const yAxis = chart.scales.y;
+        const xAxis = chart.scales.x;
+        const gradient = ctx.createLinearGradient(0, yAxis.top, 0, yAxis.bottom);
+        
+        // Create gradient stops based on the temperature range
+        for (let i = 0; i <= 100; i++) {
+          const temp = yMin + (yMax - yMin) * (i / 100);
+          gradient.addColorStop(1 - i / 100, temperatureColorScale(temp));
+        }
+
+        // Apply the gradient to each bar
+        chart.data.datasets[0].backgroundColor = chart.data.datasets[0].data.map(() => gradient);
+
+        // Draw vertical line for current date
+        if (currentDateIndex !== -1) {
+          const x = xAxis.getPixelForValue(chartDataToUse[currentDateIndex].date);
+          ctx.save();
+          ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(x, yAxis.top);
+          ctx.lineTo(x, yAxis.bottom);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        chart.update('none'); // Update without animation
+      }
+    }]
+  });
+
+  return chart;
+}
+
+function createTemperatureColorScale(minTemp, maxTemp) {
+  const coldColor = { r: 162, g: 193, b: 221 };  // #A2C1DD for 0°C and below
+  const warmColor = { r: 242, g: 201, b: 76 };   // #F2C94C for 24°C
+  const hotColor = { r: 255, g: 99, b: 71 };     // #FF6347 for 35°C and above
+
+  function interpolateColor(color1, color2, factor) {
+    const result = { r: 0, g: 0, b: 0 };
+    for (const key in result) {
+      result[key] = Math.round(color1[key] + factor * (color2[key] - color1[key]));
+    }
+    return result;
+  }
+
+  return function(temp) {
+    if (temp <= 0) return `rgb(${coldColor.r}, ${coldColor.g}, ${coldColor.b})`;
+    if (temp >= 35) return `rgb(${hotColor.r}, ${hotColor.g}, ${hotColor.b})`;
+
+    let startColor, endColor, percentage;
+    if (temp < 24) {
+      startColor = coldColor;
+      endColor = warmColor;
+      percentage = temp / 24;
+    } else {
+      startColor = warmColor;
+      endColor = hotColor;
+      percentage = (temp - 24) / 11;  // 11 is the range between 24 and 35
+    }
+
+    const interpolatedColor = interpolateColor(startColor, endColor, percentage);
+    return `rgb(${interpolatedColor.r}, ${interpolatedColor.g}, ${interpolatedColor.b})`;
+  };
+}
+
 function handleRecentWeatherPage() {
-  const chartContainer = document.querySelector('.chart-container');
-  if (chartContainer) {
-    chartContainer.innerHTML = '<canvas id="rainChart"></canvas>';
+  const rainChartContainer = document.querySelector('#soil-moisture-changes .chart-container');
+  const tempChartContainer = document.querySelector('#temperature .chart-container');
+  
+  if (rainChartContainer) {
+    rainChartContainer.innerHTML = '<canvas id="rainChart"></canvas>';
+  }
+  if (tempChartContainer) {
+    tempChartContainer.innerHTML = '<canvas id="tempChart"></canvas>';
   }
 
   fetchWeatherData()
     .then(data => {
       console.log('Received data:', data);
-
-      if (!data || !data.recentRainfall || !Array.isArray(data.recentRainfall.recent)) {
-        throw new Error('Recent rainfall data is missing or in an unexpected format');
+      
+      if (!data.dailyWeatherData || !Array.isArray(data.dailyWeatherData)) {
+        throw new Error('Daily weather data is missing or in an unexpected format');
       }
 
-      let chartData = [...data.recentRainfall.recent];
-
-      // Check if forecast data exists and is an array before adding it
-      if (data.recentRainfall.forecast && Array.isArray(data.recentRainfall.forecast)) {
-        // Sort forecast data by date, oldest to newest
-        const sortedForecast = data.recentRainfall.forecast.sort((a, b) => new Date(a.date) - new Date(b.date));
-        
-        // Take only the first 3 forecast dates (closest to present)
-        const recentForecast = sortedForecast.slice(0, 3);
-        
-        // Add these to the beginning of chartData
-        chartData = [...recentForecast, ...chartData];
-      }
-
-      console.log('Chart data:', chartData);
-
-      if (chartData.length === 0) {
-        throw new Error('No valid chart data available');
-      }
-
-      createRainChart(chartData);
-
-      // Scroll to the right end of the chart
-      setTimeout(() => {
-        const chartContainer = document.querySelector('.rain-content');
-        if (chartContainer) {
-          chartContainer.scrollLeft = chartContainer.scrollWidth;
+      // Process the new dailyWeatherData
+      let chartData = data.dailyWeatherData.map(entry => {
+        if (!entry || typeof entry.date !== 'string') {
+          console.error('Invalid entry in daily weather data:', entry);
+          return null;
         }
+        return {
+          date: new Date(entry.date.split('T')[0]), // Remove time part and create Date object
+          precipitation: entry.precipitation || 0,
+          dailyDrainage: entry.dailyDrainage || 0,
+          evapotranspiration: entry.evapotranspiration || 0,
+          minTemp: entry.minTemp,
+          maxTemp: entry.maxTemp,
+          meanTemp: entry.meanTemp,
+          type: entry.type || 'Historical' // Assume 'Historical' if not specified
+        };
+      }).filter(entry => entry !== null);
+
+      console.log('Processed daily weather data:', chartData);
+
+      chartData.sort((a, b) => a.date - b.date);
+
+      // Split the data for rain and temperature charts
+      const rainChartData = chartData.map(entry => ({
+        date: entry.date,
+        precipitation: entry.precipitation,
+        dailyDrainage: entry.dailyDrainage,
+        evapotranspiration: entry.evapotranspiration
+      }));
+
+      const tempChartData = chartData.map(entry => ({
+        date: entry.date,
+        minTemp: entry.minTemp,
+        maxTemp: entry.maxTemp,
+        meanTemp: entry.meanTemp,
+        type: entry.type
+      }));
+
+      if (rainChartData.length === 0 || tempChartData.length === 0) {
+        throw new Error('No data available for the selected date range');
+      }
+
+      createRainChart(rainChartData);
+      createTemperatureChart(tempChartData);
+
+      // Scroll both charts to the right end
+      setTimeout(() => {
+        const rainContainer = document.querySelector('.rain-content');
+        const tempContainer = document.querySelector('.temperature-content');
+        if (rainContainer) rainContainer.scrollLeft = rainContainer.scrollWidth;
+        if (tempContainer) tempContainer.scrollLeft = tempContainer.scrollWidth;
       }, 100);
     })
     .catch(error => {
-      console.error('Error loading recent weather data:', error);
-      if (chartContainer) {
-        chartContainer.innerHTML = `<p>Error loading chart data: ${error.message}. Please try again later.</p>`;
+      console.error('Error in handleRecentWeatherPage:', error);
+      if (rainChartContainer) {
+        rainChartContainer.innerHTML = `<p>Error loading chart data: ${error.message}. Please try again later.</p>`;
+      }
+      if (tempChartContainer) {
+        tempChartContainer.innerHTML = `<p>Error loading chart data: ${error.message}. Please try again later.</p>`;
       }
     });
 }
